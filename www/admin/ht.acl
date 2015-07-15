@@ -1,0 +1,5 @@
+AuthType Basic
+Options Indexes
+AuthUserFile "C:/Program Files/Apache Software Foundation/Apache2.2/bin/users"
+AuthName "admin statistic"
+Require valid-user

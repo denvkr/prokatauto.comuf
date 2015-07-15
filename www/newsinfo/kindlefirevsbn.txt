@@ -1,0 +1,70 @@
+﻿Наших американских коллег потребителей ждет очередной сюрприз
+в виде двух новинок рынка электронных книг.
+Представляем вашему вниманию Kindle Fire от Amazon и Nook Tablet
+от издательства Barnes & Noble.
+На сегодняшний день эти гаджеты продолжают дело начатое их 
+предшественниками Kindle и Nook Color.
+Kindle Fire:
+Дисплей:
+7" мультитач IPS (in-plane switching) technology,
+антибликовое покрытие, разрешение- 1024 x 600,цвета 16 million colors.
+Процессор:
+1GHz dual-core TI Omap 4 с 512MB RAM
+Размер:
+7.5" x 4.7" x 0.45" (190 mm x 120 mm x 11.4 mm).
+память:
+8GB внутренней (приблизительно 6GB доступно для контента пользователя). 
+Достаточно для 80 приложений,плюс 10 фильмов или 800 печен или 6,000 книг.
+ОС:
+Custom Android fork
+Время работы:
+До 8 ч. чтения или 7.5 часов проигрывания видео,с выключенным WiFi.
+Заряд аккумулятора сильно зависит от использования WiFI,а также 
+броузинга в сети и количества загружаемого контента.
+Зарядка:
+4 ч. до полной зарядки через AC/DC адаптер.Также поддерживается USB.
+Беспроводные технологии:
+Публичные и частные Wi-Fi сети или точки доступа использующие 802.11b,
+802.11g, 802.11n,сети с поддержкой WEP, WPA и WPA2 для аутентификации;
+не поддерживается ad-hoc (или peer-to-peer) Wi-Fi сети.
+USB:
+USB 2.0 (micro-B connector)
+Аудио:
+3.5 mm stereo audio jack,
+или подключаемые stereo speakers.
+Поддерживаемые форматы:
+Kindle (AZW), TXT, PDF, unprotected MOBI, PRC natively, Audible 
+(Audible Enhanced (AA, AAX)), DOC, DOCX, JPEG, GIF, PNG, BMP,
+non-DRM AAC, MP3, MIDI, OGG, WAV, MP4, VP8.
+Документация:
+Инструкция по быстрому старту (included in box);
+Kindle User's Guide (pre-installed on device)
+Гарантия:
+1-year гарантии включая сервис.Опционально 2-year расширенной гарантии
+доступно только для жителей  U.S. 
+Цена $199
+Nook Tablet
+Дисплей:
+7-inch VividView™ Color Тачскрин,16 million+ цветов, 
+IPS2 матрица с разрешением—1024 X 600
+Процессор:
+1GHz TI OMAP4 (dual-core) с 1GB RAM
+Память:
+16 GB (до 10,000 books) встроенной памяти.
+ОС:
+Custom Android fork 2.3
+Время работы:
+До 11.5 ч. в режиме чтения или 9 часов видео без использования беспроводных сетей
+Зарядка через AC/DC адаптер или USB кабель прибл. 3 ч.
+Беспроводные технологии:
+Wi-Fi® (802.11b/g/n)
+Поддерживаемые форматы:
+Load EPUB (including Adobe DRM or DRM free) or PDF файлы с компьютера или microSD card
+Other documents: XLS, DOC, PPT, TXT, DOCM, XLSM, PPTM, PPSX, PPSM, DOCX, XLX, PPTX.
+Видео в MP4 или Adobe Flash Player формате, 3GP, 3G2 MKV, WEBM (Video Codecs: H.264, 
+MPEG-4, H.263, VP8). Фотографии JPG, GIF, PNG, BMP, аудио через встроенный моноспикер:
+MP3, MP4, AAC, AMR, WAV, OGG (Audio Codecs MP3, AAC, AMR, LPCM, OGG Vorbis)  
+Документация:
+Инструкция по быстрому старту.
+Цена:
+$249

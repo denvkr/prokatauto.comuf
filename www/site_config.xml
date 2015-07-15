@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<siteconfig>
+<db_server_name>localhost</db_server_name>
+<db_name>prokatau_rentcar</db_name>
+<db_user_name>prokatau_root</db_user_name>
+<db_user_password>Hftg8bp</db_user_password>
+<site_url>prokatauto.comuf/</site_url>
+</siteconfig>

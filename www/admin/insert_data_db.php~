@@ -1,0 +1,59 @@
+<html>
+<body>
+<?php
+print <<<HTMLOUTPUT
+<form method="post" action="$_SERVER[PHP_SELF]">
+<table border = "1">
+<tr>
+<td>User Name:</td><td> <input type="text" name="user_name" align="left"></td>
+</tr>
+<tr>
+<td>User Password:</td> <td><input type="text" name="user_password" align="left"></td>
+</tr>
+<tr>
+<td>Description:</td> <td><input type="text" name="description" align="left"></td>
+</tr>
+</table>
+<input type="submit" name="add_user_info" value="add user info">
+</form>
+HTMLOUTPUT;
+?>
+<?php
+class db_worker {
+private $dbhost= 'localhost';
+private $dbuser ='system';
+private $dbpass ='password';
+
+function set_dbhost($dbhost) {
+    this->dbhost=$dbhost;
+}
+
+function set_user($dbuser) {
+    this->dbuser=$dbuser;
+}
+
+function set_dbpass($dbpass) {
+    this->dbpass=$dbpass
+}
+
+function add_record ($userinfo,$passwordinfo,$descriptioninfo) {
+    $conn = mysql_connect($dbhost, $dbuser, $dbpass) or die ('Error connecting to mysql');
+    $dbname = 'usrinfo';
+    mysql_select_db($dbname,$conn);
+    $result = mysql_query("insert into userinfo (username,password,comments) values('$userinfo','$passwordinfo','$descriptioninfo'",$conn);
+}
+
+function add_record ($dbhost,$dbuser,$dbpass,$userinfo,$passwordinfo,$descriptioninfo){
+    $conn = mysql_connect($dbhost, $dbuser, $dbpass) or die ('Error connecting to mysql');
+    $dbname = 'usrinfo';
+    mysql_select_db($dbname,$conn);
+    $result = mysql_query("insert into userinfo (username,password,comments) values('$userinfo','$passwordinfo','$descriptioninfo'",$conn);
+}
+}
+$mydb_worker=new db_worker();
+$mydb_worker->set_dbhost('localhost');
+$mydb_worker->set_user('dkrasavin');
+
+?>
+</body>
+</html>

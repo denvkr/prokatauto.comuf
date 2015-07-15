@@ -1,0 +1,4 @@
+Host: autovarendu.biz
+User-Agent: * 
+allow: /
+allow: /newsinfo
