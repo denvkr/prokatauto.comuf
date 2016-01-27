@@ -40,8 +40,8 @@ use AppBundle\denvkrClasses\config;
 
 use AppBundle\Entity\authority_user_form;
 use AppBundle\Entity\authority_user_form_byquery;
-use Gregwar\CaptchaBundle\Type\CaptchaType;
-use Gregwar\CaptchaBundle\Generator;
+//use Gregwar\CaptchaBundle\Type\CaptchaType;
+
 
 class DefaultController extends Controller
 {
@@ -166,11 +166,11 @@ class DefaultController extends Controller
         //для тестов
         //?user=44c54155669c3adef054c3c2a32accf7&password=44c54155669c3adef054
 	$retval=$this->get_site_config($this->site_config,'siteconfig');
-echo 1;
+//echo 1;
         $formFactory = Forms::createFormFactoryBuilder()
             ->addExtension(new HttpFoundationExtension())
             ->getFormFactory();
-echo 5;
+//echo 5;
 	if (!isset($this->config))
             $this->config=new config();
         if ($retval===false) {
@@ -194,7 +194,7 @@ echo 5;
                     
                 } else $this->session=$request->getSession();
                 $options = $this->container->getParameter('gregwar_captcha.config');
-                var_dump($options);
+                //var_dump($options);
                 //$generator = $this->container->get('gregwar_captcha.generator');
                 
                 //$Translator=new Translator('en');
@@ -214,7 +214,7 @@ echo 5;
                 $action="/user_profile?mail_link_activation=".substr($mail_link_activation_old,-33)."&data_modification=1";
                 //$str_tab='<div id="userinfo_level1" class="ul.nav" style="position:relative;left:35%;top:130px !important;width:300px;height:150px;z-index:0"><table border="1" cols="2"><tr><td>Логин:</td><td><input type="text" name="login" value="'.$retval[0].'"/></td></tr><tr><td>Пароль:</td><td><input type="text" name="password" value="'.$retval[1].'"/><br></td></tr><tr><td>Ел. почта:</td><td><input type="text" name="mail_address" value="'.$retval[2].'"/><br></td></tr><tr><td>Имя:</td><td><input type="text" name="name" value="'.$retval[3].'"/><br></td></tr><tr><td>Фамилия:</td><td><input type="text" name="last_name" value="'.$retval[4].'"/><br></tr><tr><td>Дом. адрес:</td><td><input type="text" name="address" value="'.$retval[5].'"/><br></td></tr><tr><td>Возраст:</td><td><input type="text" name="age" value="'.$retval[6].'"/><br></td></tr><tr><td>Стаж:</td><td><input type="text" name="drivers_length" value="'.$retval[7].'"/><br></td></tr><tr><td>Желаемые условия аренды автомобиля:</td><td><textarea name="rent_request" style="width:227px;height:81px;">'.$retval[8].'</textarea><br></td></tr></table></div><div id="captcha" class="ul" style="position:relative;left:40%;top:340px;width:150px;height:30px">Введите код с картинки: <img src="captcha.php?mail_link_activation='.$mail_link_activation.'" width=50 height=30><input name="captcha" size=5 type="text" /><input type="submit" name="_Registering" value="Обновить данные"></div></form>';
                 $defaults = array('login' => $retval[0],'password'=>$retval[1],'mail_address'=>$retval[2],'name'=>$retval[3],'last_name'=>$retval[4],'address'=>$retval[5],'age'=>$retval[6],'drivers_length'=>$retval[7],'rent_request'=>$retval[8]);
-                echo 6;
+                //echo 6;
                 $form = $formFactory->createBuilder('form',$defaults, array('action' => $action,'method' => 'POST'))
                         ->add('login','text')
                         ->add('password','text')
@@ -228,7 +228,8 @@ echo 5;
                         ->add('captcha', 'Gregwar\CaptchaBundle\Type\CaptchaType',$options)
                         ->getForm();
                                        //->add('captcha', $CaptchaType->getName())
-                echo 7;
+                                       //'Gregwar\CaptchaBundle\Type\CaptchaType'
+                //echo 7;
                 //$html = $this->container->get('templating')->render('user_profile.html.twig',array('user_info_tab' => $str_tab));//,array('session_id' => $session->getId(),'site_info2' => $site_info2)
         }
 
