@@ -1,0 +1,8 @@
+## YAML Template.
+---
+services:
+    app.form.type.User_profile:
+        class: AppBundle\Form\Type\User_profileType
+        arguments: ["@app.my_service"]
+        tags:
+            - { name: form.type }

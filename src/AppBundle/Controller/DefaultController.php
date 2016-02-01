@@ -40,7 +40,8 @@ use AppBundle\denvkrClasses\config;
 
 use AppBundle\Entity\authority_user_form;
 use AppBundle\Entity\authority_user_form_byquery;
-//use Gregwar\CaptchaBundle\Type\CaptchaType;
+use AppBundle\Form\Type\User_profileType;
+use Gregwar\CaptchaBundle\Type\CaptchaType;
 
 
 class DefaultController extends Controller
@@ -193,7 +194,9 @@ class DefaultController extends Controller
                     //$session_id=$this->session->getId();
                     
                 } else $this->session=$request->getSession();
+                //получаем опции для капчи
                 $options = $this->container->getParameter('gregwar_captcha.config');
+                echo $this->session->getId();
                 //var_dump($options);
                 //$generator = $this->container->get('gregwar_captcha.generator');
                 
@@ -215,7 +218,7 @@ class DefaultController extends Controller
                 //$str_tab='<div id="userinfo_level1" class="ul.nav" style="position:relative;left:35%;top:130px !important;width:300px;height:150px;z-index:0"><table border="1" cols="2"><tr><td>Логин:</td><td><input type="text" name="login" value="'.$retval[0].'"/></td></tr><tr><td>Пароль:</td><td><input type="text" name="password" value="'.$retval[1].'"/><br></td></tr><tr><td>Ел. почта:</td><td><input type="text" name="mail_address" value="'.$retval[2].'"/><br></td></tr><tr><td>Имя:</td><td><input type="text" name="name" value="'.$retval[3].'"/><br></td></tr><tr><td>Фамилия:</td><td><input type="text" name="last_name" value="'.$retval[4].'"/><br></tr><tr><td>Дом. адрес:</td><td><input type="text" name="address" value="'.$retval[5].'"/><br></td></tr><tr><td>Возраст:</td><td><input type="text" name="age" value="'.$retval[6].'"/><br></td></tr><tr><td>Стаж:</td><td><input type="text" name="drivers_length" value="'.$retval[7].'"/><br></td></tr><tr><td>Желаемые условия аренды автомобиля:</td><td><textarea name="rent_request" style="width:227px;height:81px;">'.$retval[8].'</textarea><br></td></tr></table></div><div id="captcha" class="ul" style="position:relative;left:40%;top:340px;width:150px;height:30px">Введите код с картинки: <img src="captcha.php?mail_link_activation='.$mail_link_activation.'" width=50 height=30><input name="captcha" size=5 type="text" /><input type="submit" name="_Registering" value="Обновить данные"></div></form>';
                 $defaults = array('login' => $retval[0],'password'=>$retval[1],'mail_address'=>$retval[2],'name'=>$retval[3],'last_name'=>$retval[4],'address'=>$retval[5],'age'=>$retval[6],'drivers_length'=>$retval[7],'rent_request'=>$retval[8]);
                 //echo 6;
-                $form = $formFactory->createBuilder('form',$defaults, array('action' => $action,'method' => 'POST'))
+                $form = $formFactory->createNamedBuilder('user_profile','form',$defaults, array('action' => $action,'method' => 'POST'))
                         ->add('login','text')
                         ->add('password','text')
                         ->add('mail_address','email')
@@ -225,10 +228,11 @@ class DefaultController extends Controller
                         ->add('age','text')
                         ->add('drivers_length','text')
                         ->add('rent_request','textarea')
-                        ->add('captcha', 'Gregwar\CaptchaBundle\Type\CaptchaType',$options)
+                        ->add('captcha', CaptchaType::class,$options)
                         ->getForm();
                                        //->add('captcha', $CaptchaType->getName())
                                        //'Gregwar\CaptchaBundle\Type\CaptchaType'
+                                       ////CaptchaType::class
                 //echo 7;
                 //$html = $this->container->get('templating')->render('user_profile.html.twig',array('user_info_tab' => $str_tab));//,array('session_id' => $session->getId(),'site_info2' => $site_info2)
         }
@@ -335,7 +339,7 @@ var_dump($this->container->get('templating')->render('user_profile.html.twig', a
             interpolation: enable or disable the interpolation on the captcha
             ignore_all_effects: Recommended to use when setting background images, will disable all image effects.
          */
-        $option=array ('width'=>'150','length'=>'6');
+        $option=array ('width'=>150,'height'=>50,'length'=>6,'expiration'=>5,);
         return $option;
     }
     
