@@ -26,12 +26,14 @@ class authority_user_form {
      * @Assert\Email()
      */
     private $cnt_usr;
-    private 
     
-    public function getcnt_usr(){
-        return $cnt_usr; 
+    public function Getcnt_usr(){
+        return $this->cnt_usr; 
     }
-    
+
+    public function Setcnt_usr($cnt_user){
+        return $this->cnt_usr=$cnt_user; 
+    }
     
 }
 ?>
