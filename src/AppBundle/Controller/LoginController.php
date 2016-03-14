@@ -31,7 +31,17 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
+use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\LengthValidator;
+
+use Symfony\Component\Validator\Validation;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Translation\Translator;
@@ -43,6 +53,7 @@ use AppBundle\denvkrClasses\config;
 
 use AppBundle\Entity\authority_user_form;
 use AppBundle\Entity\authority_user_form_byquery;
+use AppBundle\Entity\userlogin;
 use AppBundle\Form\Type\User_profileType;
 use Gregwar\CaptchaBundle\Type\CaptchaType;
 use Gregwar\CaptchaBundle\Generator\CaptchaGenerator;
@@ -80,6 +91,14 @@ class LoginController extends Controller{
         $formFactory = Forms::createFormFactoryBuilder()
             ->addExtension(new HttpFoundationExtension())
             ->getFormFactory();
+        //$validator=Validation::createValidatorBuilder()->addMethodMapping('constrains');
+        //var_dump($validator);
+        $ln=new Assert\Length(array('min'=>3,'max'=>20));
+        //var_dump($ln);
+        $constraint = new Assert\Collection(array(
+            'login' => array(new Assert\NotBlank(),new Assert\Length(array('min'=>3,'max'=>20))),
+             'password' => new Assert\NotBlank(),
+        ));
         //echo 5;
 	if (!isset($this->config))
             $this->config=new config();
@@ -90,20 +109,21 @@ class LoginController extends Controller{
             $this->config->setDbName('prokatau_rentcar');
             $this->config->setSiteUrl('prokatauto-symfony/');
         }
+        //Генерим сессию для страницы
+        //session_start();
+        if (!$request->hasSession()) {
+            $this->session = new Session();
+            $this->session->start();
+            //$session_id=$this->session->getId();
+
+        } else $this->session=$request->getSession();
+
         $user_profile_class=new user_profile_class($this->config->getDbServerName(),$this->config->getDbName(),$this->config->getDbUserName(),$this->config->getDbUserPassword(),'mysql');
         //echo print_r($user_profile_class);
         //$this->session = new Session(new MockArraySessionStorage());
-        echo $request->get('user').' '.$request->get('password');
-        if ($request->get('user') && $request->get('password')){
+        if ($request->get('user') && $request->get('password') && !($request->get('data_modification'))) {
+                echo $request->get('user') .' '. $request->get('password');
                 //echo $_REQUEST['user'].$_REQUEST['password'];
-                //Генерим сессию для страницы
-                //session_start();
-                if (!$request->hasSession()) {
-                    $this->session = new Session();
-                    $this->session->start();
-                    //$session_id=$this->session->getId();
-                    
-                } else $this->session=$request->getSession();
                 //var_dump($this->session);
                 //получаем опции для капчи
                 //$options = $this->container->getParameter('gregwar_captcha.config');
@@ -117,8 +137,9 @@ class LoginController extends Controller{
                 $imagefilehandler=new ImageFileHandler('AppBundle/Resources/images','',1,1);
                 $router = $this->get('router');
                 $generator = new CaptchaGenerator($router,$captchabuilder,$phrasebuilderinterface,$imagefilehandler);
-                $translator=new Translator('en');
-                $CaptchaType=new CaptchaType($this->session,$generator,$translator,$this->captcha_options());
+                $translator = new Translator('en');
+                $CaptchaType = new CaptchaType($this->session,$generator,$translator,$this->captcha_options());
+                //echo $CaptchaType->getBlockPrefix();
                 //var_dump($generator);
                 //var_dump($CaptchaType);    
                 //$this->session->setId();
@@ -127,27 +148,77 @@ class LoginController extends Controller{
                 //print_r($mail_link_activation);
                 $user_profile_class->db_store_session_info($mail_link_activation,$session_id);
                 $mail_link_activation_old=$user_profile_class->db_check_mail_link_info('',$request->get('user'),$request->get('password'));
-                //echo substr($mail_link_activation_old,-33);
+                echo substr($mail_link_activation_old,-33);
                 //echo $mail_link_activation_old;
                 $retval=$user_profile_class->db_get_user_info(substr($mail_link_activation_old,-33));
-                //print_r($retval);
+                print_r($retval);
                 $action="/login?mail_link_activation=".substr($mail_link_activation_old,-33)."&data_modification=1";
                 //$str_tab='<div id="userinfo_level1" class="ul.nav" style="position:relative;left:35%;top:130px !important;width:300px;height:150px;z-index:0"><table border="1" cols="2"><tr><td>Логин:</td><td><input type="text" name="login" value="'.$retval[0].'"/></td></tr><tr><td>Пароль:</td><td><input type="text" name="password" value="'.$retval[1].'"/><br></td></tr><tr><td>Ел. почта:</td><td><input type="text" name="mail_address" value="'.$retval[2].'"/><br></td></tr><tr><td>Имя:</td><td><input type="text" name="name" value="'.$retval[3].'"/><br></td></tr><tr><td>Фамилия:</td><td><input type="text" name="last_name" value="'.$retval[4].'"/><br></tr><tr><td>Дом. адрес:</td><td><input type="text" name="address" value="'.$retval[5].'"/><br></td></tr><tr><td>Возраст:</td><td><input type="text" name="age" value="'.$retval[6].'"/><br></td></tr><tr><td>Стаж:</td><td><input type="text" name="drivers_length" value="'.$retval[7].'"/><br></td></tr><tr><td>Желаемые условия аренды автомобиля:</td><td><textarea name="rent_request" style="width:227px;height:81px;">'.$retval[8].'</textarea><br></td></tr></table></div><div id="captcha" class="ul" style="position:relative;left:40%;top:340px;width:150px;height:30px">Введите код с картинки: <img src="captcha.php?mail_link_activation='.$mail_link_activation.'" width=50 height=30><input name="captcha" size=5 type="text" /><input type="submit" name="_Registering" value="Обновить данные"></div></form>';
                 $defaults = array('login' => $retval[0],'password'=>$retval[1],'captcha'=>null);
                 //echo 6;
                 $form = $formFactory->createBuilder('form',$defaults, array('action' => $action,'method' => 'POST'))
-                        ->add('login','text')
-                        ->add('password','text')
-                        ->add('captcha', $CaptchaType)
+                        ->add('login',TextType::class,array('attr' => array('maxlength' => 50,'required' => true)))//array('attr' => array('maxlength' => 50,'required' => true)))
+                        ->add('password',TextType::class,array('attr' => array('maxlength' => 20,'required' => true)))
+                        ->add('captcha', $CaptchaType,array('attr' => array('required' => true,'disabled' => false)))
+                        ->add('Save', SubmitType::class, array('attr'=>array('class'=>'btn btn-lg btn-primary btn-block'),'label' => 'Сохранить'))
+                        ->add('user', HiddenType::class,array('data' => $request->get('user')))
+                        ->add('data_modification', HiddenType::class,array('data' => 1))
+                        ->add('mail_link_activation', HiddenType::class,array('data' => substr($mail_link_activation_old,-33)))
                         ->getForm();
-        }
+                //$request->getSession()->set('data_modification', 1);
+                //$request->getSession()->set('mail_link_activation', substr($mail_link_activation_old,-33));
+        } else if ($request->request->get('form')['login'] && $request->request->get('form')['password'] && $request->request->get('form')['data_modification']) {
+                $captchabuilder= new CaptchaBuilder();
+                //echo $captchabuilder->getPhrase();
+                //echo __DIR__;
+                $phrasebuilderinterface=new PhraseBuilder;
+                $imagefilehandler=new ImageFileHandler('AppBundle/Resources/images','',1,1);
+                $router = $this->get('router');
+                $generator = new CaptchaGenerator($router,$captchabuilder,$phrasebuilderinterface,$imagefilehandler);
+                $translator = new Translator('en');
+                $CaptchaType = new CaptchaType($this->session,$generator,$translator,$this->captcha_options());
+                echo $CaptchaType->getBlockPrefix();
+                //var_dump($generator);
+                //var_dump($CaptchaType);    
+                //$this->session->setId();
+                $mail_link_activation=$request->request->get('form')['mail_link_activation'];
+                $session_id=$request->cookies->get('PHPSESSID');
+                //print_r($mail_link_activation);
+                $user_profile_class->db_store_session_info($mail_link_activation,$session_id);
+                $mail_link_activation_old=$user_profile_class->db_check_mail_link_info('',$request->request->get('form')['user'],$request->request->get('form')['password']);
+                //echo substr($mail_link_activation_old,-33);
+                //echo $mail_link_activation_old;
+                //при обновлении страницы сначала получаем данные из базы о пользователе а потом обновляем их если этот пользователь есть в базе
+                $retval=$user_profile_class->db_get_user_info(substr($mail_link_activation_old,-33));
                 
+                $user_profile_class->db_update_user_data($request->request->get('form')['login'], $request->request->get('form')['password'], $retval[2],$retval[3],$retval[4],$retval[5],$retval[6],$retval[7],$retval[8],$mail_link_activation);
+                //print_r($retval);
+                $action="/login?mail_link_activation=".substr($mail_link_activation_old,-33)."&data_modification=1";
+                //$str_tab='<div id="userinfo_level1" class="ul.nav" style="position:relative;left:35%;top:130px !important;width:300px;height:150px;z-index:0"><table border="1" cols="2"><tr><td>Логин:</td><td><input type="text" name="login" value="'.$retval[0].'"/></td></tr><tr><td>Пароль:</td><td><input type="text" name="password" value="'.$retval[1].'"/><br></td></tr><tr><td>Ел. почта:</td><td><input type="text" name="mail_address" value="'.$retval[2].'"/><br></td></tr><tr><td>Имя:</td><td><input type="text" name="name" value="'.$retval[3].'"/><br></td></tr><tr><td>Фамилия:</td><td><input type="text" name="last_name" value="'.$retval[4].'"/><br></tr><tr><td>Дом. адрес:</td><td><input type="text" name="address" value="'.$retval[5].'"/><br></td></tr><tr><td>Возраст:</td><td><input type="text" name="age" value="'.$retval[6].'"/><br></td></tr><tr><td>Стаж:</td><td><input type="text" name="drivers_length" value="'.$retval[7].'"/><br></td></tr><tr><td>Желаемые условия аренды автомобиля:</td><td><textarea name="rent_request" style="width:227px;height:81px;">'.$retval[8].'</textarea><br></td></tr></table></div><div id="captcha" class="ul" style="position:relative;left:40%;top:340px;width:150px;height:30px">Введите код с картинки: <img src="captcha.php?mail_link_activation='.$mail_link_activation.'" width=50 height=30><input name="captcha" size=5 type="text" /><input type="submit" name="_Registering" value="Обновить данные"></div></form>';
+                $defaults = array('login' => $request->request->get('form')['login'],'password'=>$request->request->get('form')['password'],'captcha'=>null);
+                //echo 6;
+                
+                $form = $formFactory->createBuilder('form',$defaults, array('action' => $action,'method' => 'POST'))
+                        ->add('login',TextType::class,array('attr' => array('maxlength' => 50,'required' => true)))//array('attr' => array('maxlength' => 50,'required' => true)))
+                        ->add('password',TextType::class,array('attr' => array('maxlength' => 20,'required' => true)))
+                        ->add('captcha', $CaptchaType,array('attr' => array('required' => true,'disabled' => false)))
+                        ->add('Save', SubmitType::class, array('attr'=>array('class'=>'btn btn-lg btn-primary btn-block'),'label' => 'Сохранить'))
+                        ->add('user', HiddenType::class,array('data' => $request->get('user')))
+                        ->getForm();
+                //$request->getSession()->set('data_modification', 1);
+                //$request->getSession()->set('mail_link_activation', substr($mail_link_activation_old,-33));
+            
+        }
 
                 //$CaptchaView=$CaptchaType->buildView($form->createView(), $form, $this->captcha_options());
                 //var_dump($CaptchaView);
-
-
-        $html = $this->container->get('templating')->render('login_form.html.twig',array('form' => $form->createView()));//,'captcha'=>$CaptchaView
+        if (isset($form)){
+            $html = $this->container->get('templating')->render('login_form.html.twig',array('form' => $form->createView()));//,'captcha'=>$CaptchaView
+        } else {
+            //var_dump($request->request->all());
+            //echo $request->get('user').' '.$request->get('password').' '. $request->get('data_modification').' '.$request->get('mail_link_activation');
+            $html = $this->container->get('templating')->render('base.html.twig',array('user' =>$request->request->get('form')['login']));
+        }
     
         return new Response($html);         
     }
@@ -206,8 +277,8 @@ class LoginController extends Controller{
             interpolation: enable or disable the interpolation on the captcha
             ignore_all_effects: Recommended to use when setting background images, will disable all image effects.
          */
-        $option=array ('width'=>'150',
-                        'height'=>'50',
+        $option=array ('width'=>'240',
+                        'height'=>'80',
                         'disabled'=>true,
                         'length'=>'6',
                         'quality'=>'30',
@@ -230,6 +301,7 @@ class LoginController extends Controller{
                         'background_images'=>array('../images/podcatalog2.png','../images/phone_bg.png'),
                         'ignore_all_effects'=>false,
                         'text_color'=>array(0,0,0),
+                        'disabled'=>false,
             );
         return $option;
     }

@@ -51,7 +51,7 @@ class user_profile_class extends database_connection_base_class {
 
             if (($username!='' && $userpassword=='') || ($username!='' && $userpassword!='')){
                     //echo "set @retval=(SELECT DISTINCT mail_link_info FROM userinfo WHERE  login='".$username."' and password='".$userpassword."')";
-                    mysqli_query($conn,"set @retval=(SELECT DISTINCT mail_link_info FROM userinfo WHERE  login='".$username."' and password='".$userpassword."')");
+                    mysqli_query($conn,"set @retval=(SELECT DISTINCT mail_link_info FROM userinfo WHERE login='".$username."' and password='".$userpassword."')");
                     $result = mysqli_query($conn,"select @retval;");
                     if (isset($result)===true){
                             $str='';
@@ -100,8 +100,8 @@ class user_profile_class extends database_connection_base_class {
             mysqli_query($conn,"SET NAMES utf8");
             mysqli_query($conn,"SET @retval = 0;");
             $result = mysqli_query($conn,"INSERT INTO userinfo(login,PASSWORD,mail_address,NAME,Last_Name,Address,age,drivers_length,rent_request,rent_event_id,Mail_link_Info) VALUES ('".$login."','".$password."','".$mail_address."','".$user_name."','".$user_last_name."','".$address."',".$age.",".$drivers_length.",'".$rent_request."',-1,'".$mail_link_activation."')");
-            if ((mysqli_errno)){
-                      print "Data was inserted cusessfully.";
+            if ((empty(mysqli::$error)===true)){
+                      //print "Data was inserted cusessfully.";
             }
             //mysqli_free_result($result); 
             mysqli_close($conn);
@@ -114,10 +114,13 @@ class user_profile_class extends database_connection_base_class {
         mysqli_select_db($conn,$this->get_dbname());
             //print ("call STORE_USER_DATA('".$login."','".$password."','".$mail_address."','".$user_name."','".$user_last_name."','".$address."',".$age.",".$drivers_length.",'".$mail_link_activation."',".$retval.")");
             mysqli_query($conn,"SET NAMES utf8");
-        mysqli_query($conn,"SET @retval = 0;");
-            $result = mysqli_query($conn,"UPDATE userinfo set login='".$login."',PASSWORD='".$password."',mail_address='".$mail_address."',NAME='".$user_name."',Last_Name='".$user_last_name."',Address='".$address."',age=".$age.",drivers_length=".$drivers_length.",rent_request='".$rent_request."' WHERE Mail_link_Info like'%".$mail_link_activation."%'");
-            if ((mysqli_errno)){
-                      print "Data was modified cusessfully.";
+            mysqli_query($conn,"SET @retval = 0;");
+            if (empty($mail_link_activation)){
+                $result = mysqli_query($conn,"UPDATE userinfo set login='".$login."',PASSWORD='".$password."',mail_address='".$mail_address."',NAME='".$user_name."',Last_Name='".$user_last_name."',Address='".$address."',age=".$age.",drivers_length=".$drivers_length.",rent_request='".$rent_request."' WHERE Mail_link_Info='".$mail_link_activation."'");                
+            } else
+                $result = mysqli_query($conn,"UPDATE userinfo set login='".$login."',PASSWORD='".$password."',mail_address='".$mail_address."',NAME='".$user_name."',Last_Name='".$user_last_name."',Address='".$address."',age=".$age.",drivers_length=".$drivers_length.",rent_request='".$rent_request."' WHERE Mail_link_Info like'%".$mail_link_activation."%'");
+            if ((empty(mysqli::$error)===true)){
+                      //print "Data was modified cusessfully.";
             }
             //mysqli_free_result($result); 
             mysqli_close($conn);

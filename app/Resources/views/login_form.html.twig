@@ -71,17 +71,28 @@
 
 <div class="container-fluid" id="container_main">
 <div class="row">
-<div class="col-xs-14">
+<div class="col-lg-14">
 <h1 class="bg-info" style="border-radius: 3px;border: 1px solid #000;overflow: hidden;"> Авторизация. </h1> 
 </div>
 </div>
+
 <div class="row">
-<div class="col-xs-14">
-{{ form_start(form) }}
+    <br />
+</div>
+    
+<div class="row">
+<div class="col-lg-offset-5 col-lg-2">
+{% form_theme form 'form_fields.html.twig' %}
+<form id="login_user_form" class="bg-info form-signin" role="form" method="post" action="login">
+{# {{ form_start(form) }} #}
+<h2 class="form-signin-heading">Авторизация</h2>
     {{ form_widget(form) }}
-    <input type="submit" />
-{{ form_end(form) }}
-<div id="copyright_level1" class="ul.nav" style="position:relative;left: 40%;top:550px; width:200px; height:20px"><p class="a"> ИП Красавин Д.В. 2011-2016</p></div></div>
+{#{{ form_end(form) }}#}
+</form>
+    <br />    <br />    <br />    <br />    <br />    <br />    <br />    <br />    <br />    <br />
+<div id="copyright_level1"><p class="a"> ИП Красавин Д.В. 2011-2016</p></div>
+</div>
+
 </div>
 </div>
 

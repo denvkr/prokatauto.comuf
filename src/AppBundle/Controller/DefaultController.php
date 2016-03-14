@@ -41,6 +41,8 @@ use AppBundle\denvkrClasses\config;
 use AppBundle\Entity\authority_user_form;
 use AppBundle\Entity\authority_user_form_byquery;
 use AppBundle\Form\Type\User_profileType;
+//use AppBundle\EventListener\LocaleListener;
+
 use Gregwar\CaptchaBundle\Type\CaptchaType;
 
 
@@ -64,7 +66,7 @@ class DefaultController extends Controller
     /**
      * @Route("/index", name="index")
      */
-    public function showindexAction(Request $request)
+    public function indexAction(Request $request)
     {
         try {
         //Debug::enable();
@@ -145,7 +147,8 @@ class DefaultController extends Controller
         //$smarty->display('index.tpl');
         */
         //$site_info2="test";
-        
+        $locale = $request->getLocale();
+        echo $locale;
         $html = $this->container->get('templating')->render('index.html.twig',array('session_id' => $session_id,'site_info2' => $site_info2));
         //$html='<pre>'.'$this->config='.var_dump($this->config).'$session_id='.$session_id.'</pre>';//.'1'.$dbhost.$dbuser.$dbpass.$dbname..'<br>$retval='.var_dump($retval).'<br>$xmlContent='.var_dump($xmlContent).'<br>$xmlEncoder->getRootNodeName()='.$xmlEncoder->getRootNodeName()
         //return new Response($html);
