@@ -54,15 +54,7 @@ class DefaultController extends Controller
     public $serializer;
     private $session;
     private $site_config='site_config.xml';
-    /**
-     * @Route("/luckynumber", name="homepage")
-     */
-    public function showAction(Request $request)
-    {
-        // replace this example code with whatever you need
-        //return $this->render('default/index.html.twig', array('base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),));
-        return new Response('<html><body>Lucky number: 1</body></html>');
-    }
+
     /**
      * @Route("/index", name="index")
      */

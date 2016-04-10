@@ -48,24 +48,27 @@ function btn_font_size() {
 	//console.log('clientWidth'+' '+$('#body_container').prop('clientWidth'));
 	//console.log('clientHeight'+' '+$('#body_container').prop('clientHeight'));
 
-	var Width = $('#body_container').prop('clientWidth');
-	var Height = $('#body_container').prop('clientHeight');
+	var Width = $('#body_container').attr('clientWidth');
+	var Height = $('#body_container').attr('clientHeight');
 	
 	//console.log(Width);
 	//console.log(Height);	
 	//console.log($(".btn-lg, .btn-group-lg > .btn[name='_Registering']").css('font-size'));
 	if (Width < 700) {
                 //уменшаем размер шрифта на кнопках
-		$("[name='_Registering']").css('font-size','12px');
+		$("button[name='_Registering']:eq(0)").css('font-size','10px');
+		$("button[name='_Registering']:eq(0)").html('Оставить запрос');
+                console.log($("#requestauto"));
 		$("[name='_Sign_In']").css('font-size','12px');
-                $(".form-signin-heading").css('font-size','20px');
+                $(".form-signin-heading").css('font-size','16px');
                 //модифицируем структуру страницы с row(3) на row(2)
-                if($(".row:eq(1)").length && $(".row:eq(2)").length){
+                if ($(".row:eq(1)").length && $(".row:eq(2)").length){
                     //выбираем элементы из row(2) и вставляем после row(1) 
                     $(".row:eq(1)").children().insertAfter(".row:eq(0)");
                     //выбираем элементы из row(2) и вставляем после row(1)
                     $(".row:eq(2)").children().insertAfter(".col-xs-6:eq(2)");
-                    $(".row:eq(1),.row:eq(2)").remove();
+                    $(".row:eq(1)").remove();
+                    $(".row:eq(2)").remove();
                     $('<div></div>').insertAfter(".row:eq(0)");
                     $(".row:eq(0)+div").addClass('row');
                     $(".row:eq(1)").html('<div class="col-xs-12"></div><div class="col-xs-12"></div><div class="col-xs-12"></div><div class="col-xs-12"></div><div class="col-xs-12"></div><div class="col-xs-12"></div>');
@@ -78,9 +81,11 @@ function btn_font_size() {
                     $(".col-xs-6").remove();//:gt(5)
                 }
 	} else if (Width >= 700) {
+            console.log('>700');
 		$("[name='_Registering']").css('font-size','18px');
 		$("[name='_Sign_In']").css('font-size','18px');
                 $(".form-signin-heading").css('font-size','30px');
+                //console.log($(".row:eq(2)"));
                 if (!$(".row:eq(2)").length){
                     $('<div></div>').insertAfter(".row:eq(1)");
                     $(".row:eq(1)+div").addClass('row');
@@ -90,9 +95,9 @@ function btn_font_size() {
                     $(".col-xs-6:eq(2)").html($(".col-xs-12:eq(5)").html());                    
                 }
                 $(".col-xs-12:gt(2)").remove();
-                $(".col-xs-12:eq(0)").prop('class','col-xs-6 col-md-4');
-                $(".col-xs-12:eq(1)").prop('class','col-xs-6 col-md-4');
-                $(".col-xs-12:eq(2)").prop('class','col-xs-6 col-md-4');
+                $(".col-xs-12:eq(0)").attr('class','col-xs-6 col-md-4');
+                $(".col-xs-12:eq(1)").attr('class','col-xs-6 col-md-4');
+                $(".col-xs-12:eq(2)").attr('class','col-xs-6 col-md-4');
 	}
 }
 //});

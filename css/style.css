@@ -481,28 +481,20 @@ background-attachment:fixed;
 }
 
 ul.nav {
-
 color: yellow; 
-
 background-image:url('background.png');
-
 background-repeat:no-repeat;
-
 background-attachment:fixed;
-
 }
 
 ul.hide_button {
-
 color:white; 
-
 background:white;
-
 }
 
 .checkbox {
-	position:relative;
-	left:25px;
+    position:relative;
+    left:25px;
 }
 
 .list_of_helpitems {
@@ -516,9 +508,13 @@ background:#b6b5af;
     width: 170px;
     height: 30px;
 }
-    .form_elements{
-    	margin-bottom: 10px;
-    }
-    .form_elements_form-control{
-        margin-bottom: 5px;  
-    }
+.form_elements{
+    margin-bottom: 10px;
+}
+.form_elements_form-control{
+    margin-bottom: 5px;  
+}
+    
+#copyright_level1{
+    margin-left:15%;
+}
