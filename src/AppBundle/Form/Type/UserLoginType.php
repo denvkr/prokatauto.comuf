@@ -62,16 +62,16 @@ class UserLoginType extends AbstractType{
         $generator = new CaptchaGenerator($router,$this->captchabuilder,$phrasebuilderinterface,$imagefilehandler);//$this->session->get('captchabuilder')
         $translator = new Translator('en');
         $CaptchaType = new CaptchaType($this->c_session,$generator,$translator,$this->option);
-        $validator = $this->get('validator');
-        $errors = $validator->validate($CaptchaType);
-        if (count($errors) > 0) {
-            /*
-             * Uses a __toString method on the $errors variable which is a
-             * ConstraintViolationList object. This gives us a nice string
-             * for debugging.
-             */
-            //$errorsString = (string) $errors;
-        }
+        //$validator = $this->get('validator');
+            //$errors = $validator->validate($CaptchaType);
+            //if (count($errors) > 0) {
+                /*
+                 * Uses a __toString method on the $errors variable which is a
+                 * ConstraintViolationList object. This gives us a nice string
+                 * for debugging.
+                 */
+                //$errorsString = (string) $errors;
+            //}
 
         $builder
             ->setMethod('POST')
