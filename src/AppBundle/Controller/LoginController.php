@@ -145,40 +145,29 @@ class LoginController extends Controller{
                 //echo __DIR__;
                 $this->option=$this->captcha_options();
                 $phrasebuilderinterface=new PhraseBuilder;
-                $imagefilehandler=new ImageFileHandler('AppBundle/Resources/images','',1,1);
-                $router = $this->get('router');
-                $this->captchabuilder=new CaptchaBuilder(null,$phrasebuilderinterface);
-                $generator = new CaptchaGenerator($router,$this->captchabuilder,$phrasebuilderinterface,$imagefilehandler);//$this->session->get('captchabuilder')
-                $translator = new Translator('en');
-                $CaptchaType = new CaptchaType($this->session,$generator,$translator,$this->option);
+                //$imagefilehandler=new ImageFileHandler('AppBundle/Resources/images','',1,1);
+                //$router = $this->get('router');
+                //$this->captchabuilder=new CaptchaBuilder(null,$phrasebuilderinterface);
+                //$generator = new CaptchaGenerator($router,$this->captchabuilder,$phrasebuilderinterface,$imagefilehandler);//$this->session->get('captchabuilder')
+                //$translator = new Translator('en');
+                //$CaptchaType = new CaptchaType($this->session,$generator,$translator,$this->option);
                 //echo $this->captchabuilder->getPhrase().' ';
-                $GLOBALS['captchabuilder']=$this->captchabuilder;
+                //$GLOBALS['captchabuilder']=$this->captchabuilder;
                 //$Translation=new Translation();
-                $validator = $this->get('validator');
-                $errors = $validator->validate($CaptchaType);
-                if (count($errors) > 0) {
-                /*
-                 * Uses a __toString method on the $errors variable which is a
-                 * ConstraintViolationList object. This gives us a nice string
-                 * for debugging.
-                 */
-                $errorsString = (string) $errors;
-                }
-                VarDumper::dump(array('$retval'=>$retval,'$generator_phrase='=>$generator->getPhrase($this->option),'$phrase='=>$generator->phrase,'CaptchaType'=>$CaptchaType->getName(),'assert'=>$ln,'captcha_validation'=>$errors,'fingerprint'=>$this->captchabuilder->getPhrase()));
                 //echo $CaptchaType->getBlockPrefix();
                 //var_dump($generator);
                 //var_dump($CaptchaType);    
                 //$this->session->setId();
-                $mail_link_activation=$request->get('mail_link_activation');
-                $session_id=$request->cookies->get('PHPSESSID');
+                //$mail_link_activation=$request->get('mail_link_activation');
+                //$session_id=$request->cookies->get('PHPSESSID');
                 //print_r($mail_link_activation);
-                $user_profile_class->db_store_session_info($mail_link_activation,$session_id);
+                //$user_profile_class->db_store_session_info($mail_link_activation,$session_id);
                 $mail_link_activation_old=$user_profile_class->db_check_mail_link_info('',$request->get('user'),$request->get('password'));
                 //echo substr($mail_link_activation_old,-33);
                 //echo $mail_link_activation_old;
                 $retval=$user_profile_class->db_get_user_info(substr($mail_link_activation_old,-33));
                 //print_r($retval);
-                $action="/login?mail_link_activation=".substr($mail_link_activation_old,-33)."&data_modification=1";
+                //$action="/login?mail_link_activation=".substr($mail_link_activation_old,-33)."&data_modification=1";
                 //$str_tab='<div id="userinfo_level1" class="ul.nav" style="position:relative;left:35%;top:130px !important;width:300px;height:150px;z-index:0"><table border="1" cols="2"><tr><td>Логин:</td><td><input type="text" name="login" value="'.$retval[0].'"/></td></tr><tr><td>Пароль:</td><td><input type="text" name="password" value="'.$retval[1].'"/><br></td></tr><tr><td>Ел. почта:</td><td><input type="text" name="mail_address" value="'.$retval[2].'"/><br></td></tr><tr><td>Имя:</td><td><input type="text" name="name" value="'.$retval[3].'"/><br></td></tr><tr><td>Фамилия:</td><td><input type="text" name="last_name" value="'.$retval[4].'"/><br></tr><tr><td>Дом. адрес:</td><td><input type="text" name="address" value="'.$retval[5].'"/><br></td></tr><tr><td>Возраст:</td><td><input type="text" name="age" value="'.$retval[6].'"/><br></td></tr><tr><td>Стаж:</td><td><input type="text" name="drivers_length" value="'.$retval[7].'"/><br></td></tr><tr><td>Желаемые условия аренды автомобиля:</td><td><textarea name="rent_request" style="width:227px;height:81px;">'.$retval[8].'</textarea><br></td></tr></table></div><div id="captcha" class="ul" style="position:relative;left:40%;top:340px;width:150px;height:30px">Введите код с картинки: <img src="captcha.php?mail_link_activation='.$mail_link_activation.'" width=50 height=30><input name="captcha" size=5 type="text" /><input type="submit" name="_Registering" value="Обновить данные"></div></form>';
                 //$defaults = array('login' => $retval[0],'password'=>$retval[1],'captcha'=>null);
                 //echo 6;
@@ -186,10 +175,21 @@ class LoginController extends Controller{
                 $formoptions['data']['password']=$retval[1];
                 $formoptions['data']['user']=$request->get('user');
                 $formoptions['data']['mail_link_activation_old']=substr($mail_link_activation_old,-33);
-                $formoptions['data']['phrasebuilderinterface']=$phrasebuilderinterface->niceize($generator->getPhrase($this->option));
+                //$formoptions['data']['phrasebuilderinterface']=$phrasebuilderinterface->niceize($generator->getPhrase($this->option));
                 $UserLogin=new UserLogin();
                 $UserLoginType=new UserLoginType($this->get('router'),$this->session);
                 $form =$this->createForm($UserLoginType, $UserLogin,$formoptions);
+                $form->handleRequest($request);
+                $valid_info='<div></div>';
+                $validator = $this->get('validator');
+                $errors = $validator->validate($form);
+                //if ($form->isValid()) {
+                if (count($errors) == 0) {
+                    $data = $form->getData();
+                    VarDumper::dump(array('loginformdata'=>$data));
+                    $valid_info_style='visibility: visible;';
+                    $valid_info='<div style="background-color:blue;$valid_info_style">Данные введены правильно</div>';
+                }
                 /*
                 $form = $formFactory->createBuilder('form',$defaults, array('action' => $action,'method' => 'POST'))
                         ->add('login',TextType::class,array('attr' => array('maxlength' => 50,'required' => true)))//array('attr' => array('maxlength' => 50,'required' => true)))
@@ -265,7 +265,7 @@ class LoginController extends Controller{
                 //$CaptchaView=$CaptchaType->buildView($form->createView(), $form, $this->captcha_options());
                 //var_dump($CaptchaView);
         if (isset($form)){
-            $html = $this->container->get('templating')->render('login_form.html.twig',array('form' => $form->createView()));//,'captcha'=>$CaptchaView
+            $html = $this->container->get('templating')->render('login_form.html.twig',array('form' => $form->createView(),'valid_info'=>$valid_info));//,'captcha'=>$CaptchaView
         } else {
             //var_dump($request->request->all());
             //echo $request->get('user').' '.$request->get('password').' '. $request->get('data_modification').' '.$request->get('mail_link_activation');

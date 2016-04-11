@@ -17,10 +17,20 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+
 use Gregwar\CaptchaBundle\Type\CaptchaType;
 use Gregwar\CaptchaBundle\Generator\CaptchaGenerator;
 use Gregwar\CaptchaBundle\Validator\CapchaValidator;
 
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\LengthValidator;
+use Symfony\Component\Validator\Validation;
+
+use Symfony\Component\VarDumper\VarDumper;
+use Symfony\Component\VarDumper\Dumper\HTMLDumper;
 use Gregwar\Captcha\CaptchaBuilder;
 use Gregwar\Captcha\PhraseBuilder;
 use Gregwar\CaptchaBundle\Generator\ImageFileHandler;
@@ -40,16 +50,28 @@ class UserLoginType extends AbstractType{
     //put your code here
    public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        //$validator=Validation::createValidatorBuilder()->addMethodMapping('constrains');
         $phrasebuilderinterface=new PhraseBuilder;
         $imagefilehandler=new ImageFileHandler('AppBundle/Resources/images','',1,1);
         //$router = $this->get('router');
         $router = $this->c_container;
-        $this->captchabuilder=new CaptchaBuilder(null,$phrasebuilderinterface);
+        $this->captchabuilder=new CaptchaBuilder('345gfD',$phrasebuilderinterface);
         $generator = new CaptchaGenerator($router,$this->captchabuilder,$phrasebuilderinterface,$imagefilehandler);//$this->session->get('captchabuilder')
         $translator = new Translator('en');
         $CaptchaType = new CaptchaType($this->c_session,$generator,$translator,$this->option);
+        //$validator = $this->get('validator');
+            //$errors = $validator->validate($CaptchaType);
+            //if (count($errors) > 0) {
+                /*
+                 * Uses a __toString method on the $errors variable which is a
+                 * ConstraintViolationList object. This gives us a nice string
+                 * for debugging.
+                 */
+                //$errorsString = (string) $errors;
+            //}
 
         $builder
+            ->setMethod('POST')
             ->add('login',TextType::class,array('attr' => array('maxlength' => 50,'required' => true),'data'=>$options['data']['login']))//array('attr' => array('maxlength' => 50,'required' => true)))
             ->add('password',TextType::class,array('attr' => array('maxlength' => 20,'required' => true),'data'=>$options['data']['password']))
             ->add('captcha', $CaptchaType,array('attr' => array('required' => true,'disabled' => false)))
@@ -57,7 +79,10 @@ class UserLoginType extends AbstractType{
             ->add('user', HiddenType::class,array('data' => $options['data']['user']))
             ->add('data_modification', HiddenType::class,array('data' => 1))
             ->add('mail_link_activation', HiddenType::class,array('data' => $options['data']['mail_link_activation_old']))
-            ->add('system_captcha', HiddenType::class,array('data' =>$options['data']['phrasebuilderinterface']) );
+            ->add('system_captcha', HiddenType::class,array('data' => $phrasebuilderinterface->niceize($generator->getPhrase($this->option))) );
+        $phrase=$this->captchabuilder->getPhrase();
+        VarDumper::dump(array('$generator_phrase='=>$generator->getPhrase($this->option),'$phrase='=>$phrase,'CaptchaType'=>$CaptchaType->getName(),'fingerprint'=>$this->captchabuilder->getPhrase()));
+        
     }
 
     public function __construct($c_container,$c_session){
