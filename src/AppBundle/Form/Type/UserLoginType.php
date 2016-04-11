@@ -17,6 +17,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Gregwar\CaptchaBundle\Type\CaptchaType;
 use Gregwar\CaptchaBundle\Generator\CaptchaGenerator;
@@ -80,10 +83,22 @@ class UserLoginType extends AbstractType{
             ->add('data_modification', HiddenType::class,array('data' => 1))
             ->add('mail_link_activation', HiddenType::class,array('data' => $options['data']['mail_link_activation_old']))
             ->add('system_captcha', HiddenType::class,array('data' => $phrasebuilderinterface->niceize($generator->getPhrase($this->option))) );
+        $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
+        $form_data = $event->getData();
         $phrase=$this->captchabuilder->getPhrase();
-        VarDumper::dump(array('$generator_phrase='=>$generator->getPhrase($this->option),'$phrase='=>$phrase,'CaptchaType'=>$CaptchaType->getName(),'fingerprint'=>$this->captchabuilder->getPhrase()));
+        VarDumper::dump(array('$phrase='=>$form_data,'$phrase'=>$phrase));
+        });
+        
+        VarDumper::dump(array('$generator_phrase='=>$generator->getPhrase($this->option),'CaptchaType'=>$CaptchaType->getName(),'fingerprint'=>$this->captchabuilder->getPhrase()));
         
     }
+
+    //public function configureOptions(OptionsResolver $resolver)
+    //{
+    //    $resolver->setDefaults(array(
+    //        'data_class' => 'AppBundle\Entity\UserLogin'
+    //    ));
+    //}
 
     public function __construct($c_container,$c_session){
         $this->c_container = $c_container;
