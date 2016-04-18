@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\DomCrawler\Field\InputFormField;
 
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
@@ -190,6 +191,7 @@ class LoginController extends Controller{
                     $valid_info_style='visibility: visible;';
                     $valid_info='<div style="background-color:blue;$valid_info_style">Данные введены правильно</div>';
                 }
+
                 /*
                 $form = $formFactory->createBuilder('form',$defaults, array('action' => $action,'method' => 'POST'))
                         ->add('login',TextType::class,array('attr' => array('maxlength' => 50,'required' => true)))//array('attr' => array('maxlength' => 50,'required' => true)))
@@ -283,7 +285,7 @@ class LoginController extends Controller{
         //}
         
     }
-    
+  
     function get_site_config($xmlfile,$attribute)
     {
         try {

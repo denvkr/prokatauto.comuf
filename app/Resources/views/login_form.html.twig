@@ -96,5 +96,33 @@
 </div>
 </div>
 {{valid_info | raw }}
+<script type="text/javascript">
+    function check_ajax_ready(){
+        captcha_val=$('#user_login_captcha').val();
+        $.ajax({
+        url: '/web/app_dev.php/udl',
+        type: 'post',
+        data: 'a='+captcha_val,
+        dataType: 'json',
+        beforeSend: function() {},
+        complete: function() {},
+        success: function(json) {
+            if (json['ok']!=='')
+                console.log('ура,ура,ура!'+json['ok']+' '+json['rk']);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+        console.log('error save_(reg)' + ' ' + textStatus);
+        }
+        });
+    }
+    $(document).ready(function () {
+        {% block documentReady %}
+            $('#user_login_Save').css('background','red');
+            $('#user_login_Save').attr('method','');
+            $('#login_user_form').attr('action','javascript:check_ajax_ready();');
+
+        {% endblock documentReady %}
+    });
+</script>
 </body>
 </html>
